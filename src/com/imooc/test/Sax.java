@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
@@ -18,10 +21,18 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.imooc.entity.Book;
+import com.imooc.handler.SAXParserHandler;
 
-public class SAXCreateXML {
+public class Sax implements XmlDocument {
 
-	public void createXML() {
+	@Override
+	public void test() {
+		createXml("");
+		parseXml("");
+	}
+
+	@Override
+	public void createXml(String fileName) {
 		Book b1 = new Book();
 		b1.setId("1");
 		b1.setName("冰与火之歌");
@@ -52,7 +63,7 @@ public class SAXCreateXML {
 			// 设置xml的“是否换行”
 			tr.setOutputProperty(OutputKeys.INDENT, "yes");
 			// 5.创建一个Result对象
-			File f = new File("books2.xml");
+			File f = new File(fileName);
 			if (!f.exists()) {
 				f.createNewFile();
 			}
@@ -121,9 +132,33 @@ public class SAXCreateXML {
 		}
 	}
 
-	public static void main(String[] args) {
-		SAXCreateXML test = new SAXCreateXML();
-		test.createXML();
+	@Override
+	public void parseXml(String fileName) {
+		// 获取一个SAXParserFactory的实例
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		// 通过factory获取SAXParser实例
+		try {
+			SAXParser parser = factory.newSAXParser();
+			// 创建SAXParserHandler对象
+			SAXParserHandler handler = new SAXParserHandler();
+			parser.parse(fileName, handler);
+			System.out.println("~！~！~！共有" + handler.getBookList().size() + "本书");
+			for (Book book : handler.getBookList()) {
+				System.out.println(book.getId());
+				System.out.println(book.getName());
+				System.out.println(book.getAuthor());
+				System.out.println(book.getYear());
+				System.out.println(book.getPrice());
+				System.out.println(book.getLanguage());
+				System.out.println("----finish----");
+			}
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -2,6 +2,7 @@ package com.imooc.test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,13 +14,49 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 
 import com.imooc.entity.Book;
 
-public class JDOMReadXML {
+public class JDom implements XmlDocument {
+
 	private static ArrayList<Book> booksList = new ArrayList<Book>();
 
-	public static void main(String[] args) {
+	@Override
+	public void test() {
+		createXml("");
+		parseXml("");
+	}
+
+	@Override
+	public void createXml(String fileName) {
+		Element root = new Element("employees");
+		Document document = new Document(root);
+		Element employee = new Element("employee");
+		root.addContent(employee);
+
+		Element name = new Element("name");
+		name.setText("madison");
+		employee.addContent(name);
+
+		Element sex = new Element("sex");
+		sex.setText("男");
+		employee.addContent(sex);
+
+		Element age = new Element("age");
+		age.setText("18");
+		employee.addContent(age);
+
+		XMLOutputter xmlOutputter = new XMLOutputter();
+		try {
+			xmlOutputter.output(document, new FileOutputStream(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void parseXml(String fileName) {
 		// 进行对books.xml文件的JDOM解析
 		// 准备工作
 		// 1.创建一个SAXBuilder的对象
@@ -27,7 +64,7 @@ public class JDOMReadXML {
 		InputStream in;
 		try {
 			// 2.创建一个输入流，将xml文件加载到输入流中
-			in = new FileInputStream("books.xml");
+			in = new FileInputStream(fileName);
 			InputStreamReader isr = new InputStreamReader(in, "UTF-8");
 			// 3.通过saxBuilder的build方法，将输入流加载到saxBuilder中
 			Document document = saxBuilder.build(isr);

@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
 import com.imooc.entity.Book;
 import com.imooc.handler.SAXParserHandler;
 
-public class ParseTest {
+public class CompareParse {
 
 	public void domXmlParser() {
 		ArrayList<Book> bookLists = new ArrayList<Book>();
